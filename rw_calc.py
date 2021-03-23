@@ -170,18 +170,18 @@ def sv_get_criteria() :
           }
     return dct
 
-def sv_get_daily_data(crit_dct) :
-    """ Given a location, get the daily rainfall data for beg_year through end_year """
-    loc = crit_dct[
-    return rainfall_dly_df
+#def sv_get_daily_data(crit_dct) :
+#    """ Given a location, get the daily rainfall data for beg_year through end_year """
+    #loc = crit_dct[
+#    return rainfall_dly_df
 
 def sv_derive_daily_data(crit_dct) :
     """ Given criteria and rainfall data, derive the daily scenario data """
     # Need to derive it, just reading some old stuff for now
-    #dly_df = pd.read_csv("scenario_data/scenario2_daily.csv")
-    rainfall_dly_df = sv_get_daily_data(crit_dct)
-    rainfall_df = rainfall_raw_df.filtered to beg/end year
-    returndf = aggregate_function(rainfall_df)
+    dly_df = pd.read_csv("scenario_data/scenario2_daily.csv")
+#    rainfall_dly_df = sv_get_daily_data(crit_dct)
+#    rainfall_df = rainfall_raw_df.filtered to beg/end year
+#    returndf = aggregate_function(rainfall_df)
     return dly_df
 
 def sv_derive_mth_data(dly_df) :
