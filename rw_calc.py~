@@ -31,8 +31,8 @@ def rf_dv_get_rainfall(loc, beg_year, end_year) :
     # Need logic for locations
     # Need to deal with dates more naturally - low priority
     # Need to validate end_year >= beg_year, or just make it so.
-    rainfall_raw_df = pd.read_csv("rainfall_data/Nepal/kathmandu-20042013.csv")
-    df_tmp1 = rainfall_raw_df['date'].str.split('-')
+    rainfall_raw_df = pd.read_csv("kathmandu-20042013.csv")
+    df_tmp1 = rainfall_raw_df['date'].str.split('/')
     df_tmp2 = df_tmp1.tolist()
     df_tmp3 = pd.DataFrame(df_tmp2, columns=['year', 'mth', 'day', ])
     df_tmp3['year'] = df_tmp3['year'].astype(int)

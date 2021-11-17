@@ -4,8 +4,7 @@ __pycache__/
 *$py.class
 
 # Vim Intermediate/tmp files
-*un~
-*py~
+*~
 *swp
 
 # Data
