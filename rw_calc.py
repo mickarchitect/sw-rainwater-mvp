@@ -15,7 +15,7 @@ import streamlit as st
 
 def rf_dv_get_criteria() :
     """ Get all criteria for the data view """
-    hdr_cntnr, crit_cntnr1, crit_cntnr2, crit_cntnr3 = st.beta_columns([1, 1, 1, 1])
+    hdr_cntnr, crit_cntnr1, crit_cntnr2, crit_cntnr3 = st.columns([1, 1, 1, 1])
     hdr_cntnr.markdown('## Historical Rainfall by Location')
     loc = crit_cntnr1.selectbox('Location: ', ['Kathmandu, Nepal', 'Fairplay, US'])
     beg_year = crit_cntnr2.selectbox('Begin Year: ', [2004, 2005, 2006, 2007, 2008, 
@@ -34,13 +34,13 @@ def rf_dv_get_rainfall(loc, beg_year, end_year) :
     rainfall_raw_df = pd.read_csv("kathmandu-20042013.csv")
     df_tmp1 = rainfall_raw_df['date'].str.split('/')
     df_tmp2 = df_tmp1.tolist()
-    df_tmp3 = pd.DataFrame(df_tmp2, columns=['year', 'mth', 'day', ])
+    df_tmp3 = pd.DataFrame(df_tmp2, columns=['mth', 'day', 'year', ])
     df_tmp3['year'] = df_tmp3['year'].astype(int)
     df_tmp3['mth'] = df_tmp3['mth'].astype(int)
     df_tmp3['day'] = df_tmp3['day'].astype(int)
     filter = (df_tmp3['year'] >= beg_year) & (df_tmp3['year'] <= end_year)
     df_tmp4 = df_tmp3.loc[filter]
-    rainfall_df = rainfall_raw_df.join(df_tmp4)
+    rainfall_df = df_tmp4.join(rainfall_raw_df)
     return rainfall_df
 
 def rf_dv_draw_year_avg(rainfall_df, cntnr) :
@@ -55,7 +55,6 @@ def rf_dv_draw_year_avg(rainfall_df, cntnr) :
     y = rf_yr_df['rainfall']
     ax.plot(x, y)
     cntnr.pyplot(fig)
-    cntnr.dataframe(rf_yr_df)
     return
 
 def rf_dv_draw_mth_avg(rainfall_df, cntnr) :
@@ -71,7 +70,6 @@ def rf_dv_draw_mth_avg(rainfall_df, cntnr) :
     y = mgb_df2['rf_avg']
     ax.plot(x,y)
     cntnr.pyplot(fig)
-    cntnr.dataframe(mgb_df2)
     return
 
 def rf_dv_draw_mthyr(rainfall_df, beg_year, end_year, cntnr) :
@@ -89,15 +87,14 @@ def rf_dv_draw_mthyr(rainfall_df, beg_year, end_year, cntnr) :
     ax.legend(loc='upper left')
     cntnr.pyplot(fig)
     #cntnr.write('By Year and Month')
-    cntnr.dataframe(rf_mthyr_df)
     return
 
 def rf_data_view() :
     """Rainfall Data - view selected historical data by selected location."""
     loc, beg_year, end_year = rf_dv_get_criteria()
     rainfall_df = rf_dv_get_rainfall(loc, beg_year, end_year)
-    yr_plot_cntnr, mth_plot_cntnr = st.beta_columns(2)
-    mth_yr_cntnr = st.beta_container()
+    yr_plot_cntnr, mth_plot_cntnr = st.columns(2)
+    mth_yr_cntnr = st.container()
     rf_dv_draw_year_avg(rainfall_df, yr_plot_cntnr)
     rf_dv_draw_mth_avg(rainfall_df, mth_plot_cntnr)
     rf_dv_draw_mthyr(rainfall_df, beg_year, end_year, mth_yr_cntnr)
@@ -131,25 +128,25 @@ def get_month_abbr(input_month_number) :
 
 def sv_get_criteria() :
     """ Get all criteria for the scenario view """
-    hdr_cntnr, crit_cntnr1 = st.beta_columns([1, 1])
-    crit_cntnr2, crit_cntnr3, crit_cntnr4 = st.beta_columns([1, 1, 1])
+    hdr_cntnr, crit_cntnr1 = st.columns([1, 1])
+    crit_cntnr2, crit_cntnr3, crit_cntnr4 = st.columns([1, 1, 1])
     hdr_cntnr.markdown('## Scenario Analysis View')
     loc = crit_cntnr1.selectbox('Location: ', ['Kathmandu, Nepal', 'Fairplay, US'])
     roof_sz = crit_cntnr2.number_input('Roof Size: ', value=100)
     tank_cap = crit_cntnr3.number_input('Tank Capacity: ', value=10000)
     daily_usage = crit_cntnr4.number_input('Daily Usage: ', value=500)
-    crit_cntnr5, crit_cntnr6, crit_cntnr7 = st.beta_columns([1, 1, 1])
+    crit_cntnr5, crit_cntnr6, crit_cntnr7 = st.columns([1, 1, 1])
     roof_eff = crit_cntnr5.selectbox('Roof Efficiency: ', [80, 90], index=0)
     water_level_pct = crit_cntnr6.number_input('Water Level Pct: ', value=50)
     tank_reorder_pct = crit_cntnr7.number_input('Tank Reorder Pct: ', value=30)
-    crit_cntnr8 = st.beta_container()
+    crit_cntnr8 = st.container()
     agg_method = crit_cntnr8.selectbox('Data to View: ', [
                                        'Average'
                                       ,'Worst Year'
                                       ,'Best Year'
                                       ,'Lots of others'
                                       ])
-    crit_cntnr9, crit_cntnr10 = st.beta_columns(2)
+    crit_cntnr9, crit_cntnr10 = st.columns(2)
     beg_year = crit_cntnr9.selectbox('Begin Year: ', [2004, 2005, 2006, 2007, 2008, 
                                                       2009, 2010, 2011, 2012, 2013],
                                                       index=0)
@@ -179,9 +176,9 @@ def sv_derive_daily_data(crit_dct) :
     """ Given criteria and rainfall data, derive the daily scenario data """
     # Need to derive it, just reading some old stuff for now
     dly_df = pd.read_csv("scenario_data/scenario2_daily.csv")
-#    rainfall_dly_df = sv_get_daily_data(crit_dct)
-#    rainfall_df = rainfall_raw_df.filtered to beg/end year
-#    returndf = aggregate_function(rainfall_df)
+    #rainfall_dly_df = sv_get_daily_data(crit_dct)
+    #rainfall_df = rainfall_raw_df.filtered to beg/end year
+    #returndf = aggregate_function(rainfall_df)
     return dly_df
 
 def sv_derive_mth_data(dly_df) :
@@ -268,11 +265,11 @@ def scenario_view() :
     crit_dct = sv_get_criteria()
     dly_df = sv_derive_daily_data(crit_dct)
     mth_df = sv_derive_mth_data(dly_df)
-    wf_cntnr = st.beta_container()
+    wf_cntnr = st.container()
     sv_draw_mth_wf(mth_df, wf_cntnr)
-    cb_cntnr = st.beta_container()
+    cb_cntnr = st.container()
     sv_draw_mth_cb(mth_df, cb_cntnr)
-    yr_sum_cntnr = st.beta_container()
+    yr_sum_cntnr = st.container()
     sv_draw_yr_sum(mth_df, yr_sum_cntnr)
     return
 
@@ -297,24 +294,3 @@ drvg_dct = {
 page_lst = list(drvg_dct.keys())
 page = st.sidebar.radio('Select page:', page_lst)
 drvg_dct[page]()
-
-# delete below here once safe
-#def scenario_input() :
-#    """Input main data and parameters to run a rainwater collection scenario"""
-#    def_roof_sz = 80
-#    def_tank_cap = 10000
-#    def_daily_usage = 500
-#    def_roof_eff = 80
-#    def_water_level_pct = 50
-#    def_tank_reorder_pct = 30
-#    input_cntnr, parm_cntnr = st.beta_columns([2, 1])
-#    input_cntnr.markdown('## Rainwater Collection - Scenario Input')
-#    scn_roof_sz = input_cntnr.number_input('Roof Size: ', value=def_roof_sz)
-#    scn_tank_cap = input_cntnr.number_input('Tank Capacity: ', value=def_tank_cap)
-#    scn_daily_usage = input_cntnr.number_input('Daily Usage: ', value=def_daily_usage)
-#    parm_cntnr.markdown('## Parameters, Change Less Frequently')
-#    scn_roof_eff = parm_cntnr.number_input('Roof Efficiency: ', value=def_roof_eff)
-#    scn_water_level_pct = parm_cntnr.number_input('Water Level Percent in Tank: ', value=def_water_level_pct)
-#    scn_reorder_pct = parm_cntnr.number_input('Reorder Level Percent in Tank: ', value=def_tank_reorder_pct)
-#    return
-
