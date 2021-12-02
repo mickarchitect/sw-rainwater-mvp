@@ -78,7 +78,7 @@ def rf_dv_draw_mthyr(rainfall_df, beg_year, end_year, cntnr) :
     rf_mthyr_sorted_df = rf_mthyr_df.sort_values(['year', 'mth'])
     graph_df = rf_mthyr_sorted_df.pivot(index='mth', columns='year', values='rainfall')
     fig, ax = plt.subplots()
-    ax.set_title('Kathmandu Rainfall by Month and Year')
+    ax.set_title('Kathmandu Change this Rainfall by Month and Year')
     ax.set_ylabel('Rainfall Amount')
     ax.set_xlabel('Month')
     x = graph_df.index
