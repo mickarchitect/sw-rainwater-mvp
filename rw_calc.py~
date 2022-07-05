@@ -128,31 +128,74 @@ def get_month_abbr(input_month_number) :
 
 def sv_get_criteria() :
     """ Get all criteria for the scenario view """
-    hdr_cntnr, crit_cntnr1 = st.columns([1, 1])
-    crit_cntnr2, crit_cntnr3, crit_cntnr4 = st.columns([1, 1, 1])
-    hdr_cntnr.markdown('## Scenario Analysis View')
-    loc = crit_cntnr1.selectbox('Location: ', ['Kathmandu, Nepal', 'Fairplay, US'])
-    roof_sz = crit_cntnr2.number_input('Roof Size: ', value=100)
-    tank_cap = crit_cntnr3.number_input('Tank Capacity: ', value=10000)
-    daily_usage = crit_cntnr4.number_input('Daily Usage: ', value=500)
-    crit_cntnr5, crit_cntnr6, crit_cntnr7 = st.columns([1, 1, 1])
-    roof_eff = crit_cntnr5.selectbox('Roof Efficiency: ', [80, 90], index=0)
-    water_level_pct = crit_cntnr6.number_input('Water Level Pct: ', value=50)
-    tank_reorder_pct = crit_cntnr7.number_input('Tank Reorder Pct: ', value=30)
-    crit_cntnr8 = st.container()
-    agg_method = crit_cntnr8.selectbox('Data to View: ', [
+    #hdr_cntnr, crit_cntnr1 = st.columns([1, 1])
+    #crit_cntnr2, crit_cntnr3, crit_cntnr4 = st.columns([1, 1, 1])
+    #hdr_cntnr.markdown('## Scenario Analysis View')
+    #loc = crit_cntnr1.selectbox('Location: ', ['Kathmandu, Nepal', 'Fairplay, US'])
+    #roof_sz = crit_cntnr2.number_input('Roof Size: ', value=100)
+    #tank_cap = crit_cntnr3.number_input('Tank Capacity: ', value=10000)
+    #daily_usage = crit_cntnr4.number_input('Daily Usage: ', value=500)
+    #crit_cntnr5, crit_cntnr6, crit_cntnr7 = st.columns([1, 1, 1])
+    #roof_eff = crit_cntnr5.selectbox('Roof Efficiency: ', [80, 90], index=0)
+    #water_level_pct = crit_cntnr6.number_input('Water Level Pct: ', value=50)
+    #tank_reorder_pct = crit_cntnr7.number_input('Tank Reorder Pct: ', value=30)
+    #crit_cntnr8 = st.container()
+    #agg_method = crit_cntnr8.selectbox('Data to View: ', [
+                                       #'Average'
+                                      #,'Worst Year'
+                                      #,'Best Year'
+                                      #,'Lots of others'
+                                      #])
+    #crit_cntnr9, crit_cntnr10 = st.columns(2)
+    #beg_year = crit_cntnr9.selectbox('Begin Year: ', [2004, 2005, 2006, 2007, 2008, 
+                                                      #2009, 2010, 2011, 2012, 2013],
+                                                      #index=0)
+    #end_year = crit_cntnr10.selectbox('End Year: ', [2004, 2005, 2006, 2007, 2008,
+                                                    #2009, 2010, 2011, 2012, 2013],
+                                                    #index=9)
+    agg_method = 'Average'
+    beg_year = 2006
+    end_year = 2012
+    
+    scn_form = st.form('scnro_form')
+    scn_form.markdown("""
+        ## Scenario Analysis View
+        - Enter information about your (proposed) rainwater collection and usage.
+        - Get back daily, monthly and annual summaries of rainwater collected and tankers used.
+        ### First - Basics
+        - Enter simple information about your proposed rainwater system and household
+        """)
+    basic_col1, basic_col2, basic_col3 = scn_form.columns(3)
+    roof_sz = basic_col1.number_input('Roof Size (square meters): ', value=100)
+    tank_cap = basic_col2.number_input('Tank Capacity (liters): ', value=10000)
+    daily_usage = basic_col3.number_input('Daily Usage (liters): ', value=500)
+    scn_form.markdown("""
+        ### Second - Advanced, skip if unsure
+        """)
+    adv_col1, adv_col2, adv_col3 = scn_form.columns(3)
+    roof_eff = adv_col1.selectbox('Roof Efficiency: ', [80, 90], index=0)
+    water_level_pct = adv_col2.number_input('Water Level Pct: ', value=50)
+    tank_reorder_pct = adv_col3.number_input('Tank Reorder Pct: ', value=30)
+    scn_form.markdown("""
+        ### Finally - what scenario would you like to forecast against
+        """)
+    scn_col1, scn_col2 = scn_form.columns(2)
+    beg_year = scn_col1.selectbox('Begin Year: ', [2004, 2005, 2006, 2007, 2008, 
+                                             2009, 2010, 2011, 2012, 2013],
+                                             index=3)
+    end_year = scn_col2.selectbox('End Year: ', [2004, 2005, 2006, 2007, 2008,
+                                           2009, 2010, 2011, 2012, 2013],
+                                           index=3)
+    loc = scn_col1.selectbox('Location: ', ['Kathmandu, Nepal', 'Fairplay, US'])
+    agg_method = scn_col2.selectbox('Scenario: ', [
                                        'Average'
-                                      ,'Worst Year'
-                                      ,'Best Year'
+                                      ,'Worst Day of All Years'
+                                      ,'Best Day of All Years'
+                                      ,'One Year'
                                       ,'Lots of others'
-                                      ])
-    crit_cntnr9, crit_cntnr10 = st.columns(2)
-    beg_year = crit_cntnr9.selectbox('Begin Year: ', [2004, 2005, 2006, 2007, 2008, 
-                                                      2009, 2010, 2011, 2012, 2013],
-                                                      index=0)
-    end_year = crit_cntnr10.selectbox('End Year: ', [2004, 2005, 2006, 2007, 2008,
-                                                    2009, 2010, 2011, 2012, 2013],
-                                                    index=9)
+                                      ], index=3)
+    submitted = scn_form.form_submit_button('Calculate')
+
     dct = {
             'Location' : loc
            ,'Roof Size' : roof_sz
@@ -167,19 +210,148 @@ def sv_get_criteria() :
           }
     return dct
 
-#def sv_get_daily_data(crit_dct) :
-#    """ Given a location, get the daily rainfall data for beg_year through end_year """
-    #loc = crit_dct[
-#    return rainfall_dly_df
+def sv_average_filter(tmp_df, crit_dct) :
+    """ Given criteria and rainfall data, derive the daily scenario data for rainfall=one year"""
+    # display it for debugging
+    #st.dataframe(oy_df)
+
+    # Preserve the mid-year year to add back to the dataframe later
+    mid_year = round(crit_dct['Begin Year'] + ((crit_dct['End Year'] - crit_dct['Begin Year']) / 2))
+
+    # leap year causes issues, get rid of it, not working, so skip for now
+    fltr3 = tmp_df['date'].dt.month == 2
+    fltr4 = tmp_df['date'].dt.day == 29
+
+    # Filter to the beg/end year given by the user
+    end_dt = '12/31/' + str(crit_dct['End Year'])
+    beg_dt = '01/01/' + str(crit_dct['Begin Year'])
+    fltr1 = tmp_df['date'] <= end_dt
+    fltr2 = tmp_df['date'] >= beg_dt
+    #tmp2_df = tmp_df[fltr1&fltr2& (not (fltr3&fltr4))]
+    tmp2_df = tmp_df[fltr1&fltr2]
+
+    tmp2_df['month'] = tmp2_df['date'].dt.month
+    tmp2_df['day'] = tmp2_df['date'].dt.day
+    tmp3_df = tmp2_df.groupby(['month', 'day'], as_index=False).mean()
+    #fltr3 = tmp3_df['month'] == 2
+    #fltr4 = tmp3_df['day'] == 29
+    #tmp4_df = tmp3_df[not (fltr3&fltr4)]
+    tmp3_df['year'] = mid_year
+    #tmp3_df['date'] = str(tmp3_df['month'])+str(tmp3_df['day'])+str(tmp3_df['year'])
+    st.dataframe(tmp3_df)
+    tmp3_df['date'] = pd.to_datetime(tmp3_df[['month', 'day', 'year']])
+
+    return tmp3_df
+
+def sv_one_year_filter(tmp_df, crit_dct) :
+    """ Given criteria and rainfall data, derive the daily scenario data for rainfall=one year"""
+    # display it for debugging
+    #st.dataframe(oy_df)
+
+    # Filter to the beg/end year given by the user
+    end_dt = '12/31/' + str(crit_dct['End Year'])
+    beg_dt = '01/01/' + str(crit_dct['Begin Year'])
+    fltr1 = tmp_df['date'] <= end_dt
+    fltr2 = tmp_df['date'] >= beg_dt
+    tmp2_df = tmp_df[fltr1&fltr2]
+    return tmp2_df
+
+def sv_one_year_calc(tmp_df, crit_dct) :
+    """ Given criteria and rainfall data, derive the daily scenario data for rainfall=one year"""
+    # display it for debugging
+    #st.dataframe(oy_df)
+
+    # get the starting index #
+    ctr = 1
+    for my_row in tmp_df.iterrows() :
+        if ctr == 1 :
+            st_index = my_row[0]
+            ctr += 1
+        else :
+            break
+
+    dt_s = pd.Series([], name='dt', dtype='datetime64[ns]')
+    rainfall_s = pd.Series([], name='rainfall', dtype='float')
+    ystrdy_lvl_s = pd.Series([], name='ystrdy_lvl', dtype='float')
+    usg_amt_s = pd.Series([], name='usg_amt', dtype='float')
+    tdy_rain_ptntl_s = pd.Series([], name='tdy_rain_ptntl', dtype='float')
+    tdy_rain_coll_s = pd.Series([], name='tdy_rain_coll', dtype='float')
+    tdy_rain_ovflw_s = pd.Series([], name='tdy_rain_ovflw', dtype='float')
+    tnkr_amt_s = pd.Series([], name='tnkr_amt', dtype='int')
+    tdy_lvl_s = pd.Series([], name='tdy_lvl', dtype='float')
+    
+    tank_capacity = crit_dct['Tank Capacity']
+    current_water_level_percent = crit_dct['Water Level Pct']
+    roof_size = crit_dct['Roof Size']
+    roof_efficiency = crit_dct['Roof Efficiency']
+    daily_usage = crit_dct['Daily Usage']
+    tank_reorder_pct = crit_dct['Tank Reorder Pct']
+
+    for dnum in range(1,364) :
+        didx = dnum - 1
+        if dnum == 1 :
+            yesterday_level = tank_capacity * (current_water_level_percent / 100)
+        else :
+            yesterday_level = tdy_lvl_s.at[didx-1]
+        dt = tmp_df.at[(didx+st_index), 'date']
+        today_rainfall = tmp_df.at[(didx+st_index), 'rainfall']
+        today_rain_pot = today_rainfall * roof_size * (roof_efficiency / 100)
+        if ((yesterday_level - daily_usage) + today_rain_pot) < tank_capacity :
+            today_rain_coll = today_rain_pot
+            today_rain_overflow = 0
+        else :
+            today_rain_coll = tank_capacity - (yesterday_level - daily_usage)
+            today_rain_overflow = today_rain_pot - today_rain_coll
+        tanker_amt = 0
+        if yesterday_level < (tank_capacity * (tank_reorder_pct / 100)) :
+            refill_max = tank_capacity - yesterday_level
+            num_tankers = refill_max // 6000
+            tanker_amt = 6000 * num_tankers
+            #tanker_amt = 6
+        today_level = (yesterday_level - daily_usage) + today_rain_coll + tanker_amt
+
+        ystrdy_lvl_s.at[didx] = round(yesterday_level)
+        usg_amt_s.at[didx] = round(daily_usage)
+        tdy_rain_ptntl_s.at[didx] = round(today_rain_pot)
+        tdy_rain_coll_s.at[didx] = round(today_rain_coll)
+        tdy_rain_ovflw_s.at[didx] = round(today_rain_overflow)
+        tnkr_amt_s.at[didx] = round(tanker_amt)
+        tdy_lvl_s.at[didx] = round(today_level)
+        dt_s[didx] = dt
+        rainfall_s[didx] = today_rainfall
+
+    new_df = dt_s.to_frame().join(rainfall_s).join(ystrdy_lvl_s).join(usg_amt_s).join(tdy_rain_ptntl_s).join(tdy_rain_coll_s).\
+                              join(tnkr_amt_s).join(tdy_lvl_s).join(tdy_rain_ovflw_s)
+    return new_df
 
 def sv_derive_daily_data(crit_dct) :
     """ Given criteria and rainfall data, derive the daily scenario data """
-    # Need to derive it, just reading some old stuff for now
-    dly_df = pd.read_csv("scenario_data/scenario2_daily.csv")
-    #rainfall_dly_df = sv_get_daily_data(crit_dct)
-    #rainfall_df = rainfall_raw_df.filtered to beg/end year
-    #returndf = aggregate_function(rainfall_df)
-    return dly_df
+    # Read the raw data file
+    tmp_df = pd.read_csv('kathmandu-20042013.csv', parse_dates=[0])
+
+    # if/elif for the scenario
+    scenario = crit_dct['Aggregation Method']
+    if scenario == 'One Year' :
+        tmp2_df = sv_one_year_filter(tmp_df, crit_dct)
+        ret_df = sv_one_year_calc(tmp2_df, crit_dct)
+    elif scenario == 'Average' :
+        tmp2_df = sv_average_filter(tmp_df, crit_dct)
+        ret_df = sv_one_year_calc(tmp2_df, crit_dct)
+    elif scenario == 'Worst Day of All Years' :
+        ret_df = sv_one_year_calc(tmp_df, crit_dct)
+    elif scenario == 'Best Day of All Years' :
+        ret_df = sv_one_year_calc(tmp_df, crit_dct)
+
+
+    # Need to do calculations for Average and Worst/Best Day of All Years, 
+    # for right now, implement One Year
+
+    # need to reindex the dataframe - this is having no effect, built a workaround in sv_one_year_calc
+    #tmp3_df = tmp2_df.reindex()
+
+    # need to handle if more than one year is in our input, ignore for now
+    #tmp4_df = sv_one_year_calc(tmp3_df, crit_dct)
+    return ret_df
 
 def sv_derive_mth_data(dly_df) :
     """ Given daily data, derive the monthly scenario data """
@@ -215,6 +387,8 @@ def sv_draw_mth_wf(mth_df, cntnr) :
         wf_x.append(int(-1*row[1].mth_usage))
         tgt_ctr += 1
 
+    cntnr.markdown('### Monthly Rainfall and Tanker Collected vs Usage - Data')
+    cntnr.dataframe(viz_df)
     fig = go.Figure(go.Waterfall(
         name = "2018", 
         orientation = "h", 
@@ -227,8 +401,6 @@ def sv_draw_mth_wf(mth_df, cntnr) :
     fig.update_layout(height=1000)
     cntnr.markdown('### Rainfall and Tanker Collected vs Usage Over Time')
     cntnr.plotly_chart(fig)
-    cntnr.markdown('### Monthly Rainfall and Tanker Collected vs Usage - Data')
-    cntnr.dataframe(viz_df)
     return
 
 def sv_draw_mth_cb(mth_df, cntnr) :
@@ -264,13 +436,19 @@ def scenario_view() :
     """Allow user to analyze rainwater collection scenario"""
     crit_dct = sv_get_criteria()
     dly_df = sv_derive_daily_data(crit_dct)
-    mth_df = sv_derive_mth_data(dly_df)
-    wf_cntnr = st.container()
-    sv_draw_mth_wf(mth_df, wf_cntnr)
-    cb_cntnr = st.container()
-    sv_draw_mth_cb(mth_df, cb_cntnr)
-    yr_sum_cntnr = st.container()
-    sv_draw_yr_sum(mth_df, yr_sum_cntnr)
+
+    st.markdown("""
+        ## Results 
+        ### Daily - Tabular Results
+        """)
+    st.dataframe(dly_df)
+    #mth_df = sv_derive_mth_data(dly_df)
+    #wf_cntnr = st.container()
+    #sv_draw_mth_wf(mth_df, wf_cntnr)
+    #cb_cntnr = st.container()
+    #sv_draw_mth_cb(mth_df, cb_cntnr)
+    #yr_sum_cntnr = st.container()
+    #sv_draw_yr_sum(mth_df, yr_sum_cntnr)
     return
 
 
