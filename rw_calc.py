@@ -1,6 +1,7 @@
 """
 This module contains the main program and all functions to perform
 rainwater harvesting calculations and view rainwater data.
+Testing github connection.
 """
 
 import time
