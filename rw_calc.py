@@ -456,6 +456,7 @@ def scenario_view() :
 def about_view() :
     """ About """
     st.markdown('## About')
+    st.markdown('- Running on azure now')
     return
 
 
